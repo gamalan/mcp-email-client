@@ -1,20 +1,17 @@
+import asyncio
 import logging
 from pathlib import Path
 from typing import Sequence
 from mcp.server import Server
-from mcp.server.session import ServerSession
 from mcp.server.stdio import stdio_server
 from mcp.types import (
-    ClientCapabilities,
     TextContent,
     Tool,
-    ListRootsResult,
-    RootsCapability,
 )
-from .config import MailConfig
-from .mail import handleAddConfig, handleUpdateConfig, handleDeleteConfig, handleListConfigs, handleSendEmail,handleLoadFiveLatestEmails
+from .mailhandler import *
 
-async def serve(repository: Path | None) -> None:
+
+async def serve() -> Server:
     logger = logging.getLogger(__name__)
     server = Server("EmailClient")
 
@@ -117,6 +114,14 @@ async def serve(repository: Path | None) -> None:
         else:
             raise ValueError(f"Unknown tool: {name}")
 
-    options = server.create_initialization_options()
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(read_stream, write_stream, options, raise_exceptions=True)
+    return server
+
+
+def main() -> None:
+    logging.basicConfig(level=logging.INFO)
+    async def _run():
+        server = await serve()
+        options = server.create_initialization_options()
+        async with stdio_server() as (read_stream, write_stream):
+            await server.run(read_stream, write_stream, options, raise_exceptions=True)
+    asyncio.run(_run())

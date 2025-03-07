@@ -3,7 +3,6 @@ import smtplib, imaplib
 
 def handleAddConfig(name: str, **kwargs):
     config = MailConfig(name, **kwargs)
-    # Implementation of adding email configuration using the provided name and inbound host
     return f"Email configuration '{config.name}' added successfully."
 
 def handleUpdateConfig(name: str, **kwargs):
