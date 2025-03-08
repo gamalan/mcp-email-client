@@ -13,3 +13,7 @@ dependencies = [
 
 [project.scripts]
 mcp_email_client = "mcp_email_client:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

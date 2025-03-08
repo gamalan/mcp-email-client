@@ -166,9 +166,9 @@ cli = [
 ]
 
 [[package]]
-name = "mcp-email"
+name = "mcp-email-client"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "asyncio" },
     { name = "imapclient" },

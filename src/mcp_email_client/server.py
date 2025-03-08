@@ -30,25 +30,47 @@ async def serve() -> Server:
                 }
             ),
             Tool(
+                name="add_email_config",
+                description="Add email configuration",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "inbound_user": {"type": "string"},
+                        "inbound_password": {"type": "string"},
+                        "inbound_host": {"type": "string"},
+                        "inbound_port": {"type": "integer"},
+                        "inbound_ssl": {"type": "boolean"},
+                        "is_outbound_equal": {"type": "boolean"},
+                        "outbound_user": {"type": "string"},
+                        "outbound_password": {"type": "string"},
+                        "outbound_server": {"type": "string"},
+                        "outbound_port": {"type": "integer"},
+                        "outbound_ssl": {"type": "string"},
+                    },
+                    "required": ["name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
+                }
+            ),
+            Tool(
                 name="update_email_config",
                 description="Update email configuration",
                 inputSchema={
                     "type": "object",
                     "properties": {
                         "name": {"type": "string"},
-                        "imap_email": {"type": "string"},
-                        "imap_password": {"type": "string"},
-                        "imap_server": {"type": "string"},
-                        "imap_port": {"type": "integer"},
-                        "imap_ssl": {"type": "boolean"},
-                        "is_server_same": {"type": "boolean"},
-                        "smtp_email": {"type": "string"},
-                        "smtp_password": {"type": "string"},
-                        "smtp_server": {"type": "string"},
-                        "smtp_port": {"type": "integer"},
-                        "smtp_ssl": {"type": "string"},
+                        "inbound_user": {"type": "string"},
+                        "inbound_password": {"type": "string"},
+                        "inbound_host": {"type": "string"},
+                        "inbound_port": {"type": "integer"},
+                        "inbound_ssl": {"type": "boolean"},
+                        "is_outbound_equal": {"type": "boolean"},
+                        "outbound_user": {"type": "string"},
+                        "outbound_password": {"type": "string"},
+                        "outbound_server": {"type": "string"},
+                        "outbound_port": {"type": "integer"},
+                        "outbound_ssl": {"type": "string"},
                     },
-                    "required": ["name", "imap_email", "imap_password", "imap_server", "imap_port", "imap_ssl", "is_server_same"],
+                    "required": ["name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
                 }
             ),
             Tool(
@@ -97,7 +119,7 @@ async def serve() -> Server:
             list_config = handleListConfigs()
             return [TextContent(type="text",text=f'Email configs:{list_config}')]
         elif name == "add_email_config":
-            add_config = handleAddConfig(name,**arguments)
+            add_config = handleAddConfig(**arguments)
             return [TextContent(type="text",text=f'Email config added:{add_config}')]
         elif name == "update_email_config":
             update_config = handleUpdateConfig(name,**arguments)
