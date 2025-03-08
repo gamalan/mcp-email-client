@@ -12,4 +12,4 @@ dependencies = [
 ]
 
 [project.scripts]
-mcp-email-client = "mcp_email_client:main"
+mcp_email_client = "mcp_email_client:main"
