@@ -1,5 +1,5 @@
 [project]
-name = "mcp-email"
+name = "mcp-email-client"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -10,3 +10,6 @@ dependencies = [
     "mcp[cli]>=1.3.0",
     "pydantic>=2.10.6",
 ]
+
+[project.scripts]
+mcp-email-client = "mcp_email_client:main"
