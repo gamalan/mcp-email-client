@@ -17,7 +17,7 @@ Mail Client MCP is a Python-based email client that allows users to manage email
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/mcp-email-client.git
+    git clone https://github.com/gamalan/mcp-email-client.git
     cd mcp-email-client
     ```
 2. Install uv
