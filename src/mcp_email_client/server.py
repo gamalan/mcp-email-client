@@ -35,7 +35,7 @@ async def serve() -> Server:
                 inputSchema={
                     "type": "object",
                     "properties": {
-                        "name": {"type": "string"},
+                        "_name": {"type": "string"},
                         "inbound_user": {"type": "string"},
                         "inbound_password": {"type": "string"},
                         "inbound_host": {"type": "string"},
@@ -44,11 +44,11 @@ async def serve() -> Server:
                         "is_outbound_equal": {"type": "boolean"},
                         "outbound_user": {"type": "string"},
                         "outbound_password": {"type": "string"},
-                        "outbound_server": {"type": "string"},
+                        "outbound_host": {"type": "string"},
                         "outbound_port": {"type": "integer"},
                         "outbound_ssl": {"type": "string"},
                     },
-                    "required": ["name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
+                    "required": ["_name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
                 }
             ),
             Tool(
@@ -57,7 +57,7 @@ async def serve() -> Server:
                 inputSchema={
                     "type": "object",
                     "properties": {
-                        "name": {"type": "string"},
+                        "_name": {"type": "string"},
                         "inbound_user": {"type": "string"},
                         "inbound_password": {"type": "string"},
                         "inbound_host": {"type": "string"},
@@ -66,11 +66,11 @@ async def serve() -> Server:
                         "is_outbound_equal": {"type": "boolean"},
                         "outbound_user": {"type": "string"},
                         "outbound_password": {"type": "string"},
-                        "outbound_server": {"type": "string"},
+                        "outbound_host": {"type": "string"},
                         "outbound_port": {"type": "integer"},
                         "outbound_ssl": {"type": "string"},
                     },
-                    "required": ["name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
+                    "required": ["_name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
                 }
             ),
             Tool(
@@ -122,16 +122,22 @@ async def serve() -> Server:
             add_config = handleAddConfig(**arguments)
             return [TextContent(type="text",text=f'Email config added:{add_config}')]
         elif name == "update_email_config":
-            update_config = handleUpdateConfig(name,**arguments)
+            config_name = arguments['_name']
+            del arguments['_name']
+            update_config = handleUpdateConfig(config_name,**arguments)
             return [TextContent(type="text",text=f'Email config updated:{update_config}')]
         elif name == "delete_email_config":
-            delete_config = handleDeleteConfig(name)
+            delete_config = handleDeleteConfig(arguments['name'])
             return [TextContent(type="text",text=f'Email config deleted:{delete_config}')]
         elif name == "send_email":
-            send_email = handleSendEmail(name,**arguments)
+            config_name = arguments['_name']
+            del arguments['_name']
+            send_email = handleSendEmail(config_name,**arguments)
             return [TextContent(type="text",text=f'Email sent:{send_email}')]
         elif name == "read_email":
-            read_emails = handleLoadFiveLatestEmails(name)
+            config_name = arguments['_name']
+            del arguments['_name']
+            read_emails = handleLoadFiveLatestEmails(config_name)
             return [TextContent(type="text",text=f'Email received:{read_emails}')]
         else:
             raise ValueError(f"Unknown tool: {name}")

@@ -1,16 +1,19 @@
 from .config import MailConfig
 import smtplib, imaplib
-from logging import Logger
+import logging
 
-def handleAddConfig(logger: Logger, **kwargs):
+logger = logging.getLogger(__name__)
+
+def handleAddConfig(**kwargs):
     try:
         config = MailConfig(**kwargs)
+        config.save_entry()
         return f"Email configuration '{config.name}' added successfully."
     except Exception as e:
         logger.error(f"Failed to add email configuration: {str(e)}")
         return f"Can't add email configuration."
 
-def handleUpdateConfig(logger: Logger, name: str, **kwargs):
+def handleUpdateConfig(name: str, **kwargs):
     try:
         config = MailConfig.load_entry(name)
         config.update(**kwargs)
@@ -19,7 +22,7 @@ def handleUpdateConfig(logger: Logger, name: str, **kwargs):
         logger.error(f"Failed to update email configuration: {str(e)}")
         return f"Can't update email '{name}' configuration."
 
-def handleDeleteConfig(logger: Logger, name: str):
+def handleDeleteConfig(name: str):
     try:
         MailConfig.delete_entry(name)
         return f"Email configuration '{name}' deleted successfully."
@@ -27,7 +30,7 @@ def handleDeleteConfig(logger: Logger, name: str):
         logger.error(f"Failed to delete email configuration: {str(e)}")
         return f"Email configuration '{name}' not found."
 
-def handleListConfigs(logger:Logger):
+def handleListConfigs():
     try:
         configs = MailConfig.load_all()
         return [config.name for config in configs]
@@ -35,7 +38,7 @@ def handleListConfigs(logger:Logger):
         logger.error(f"Failed to list email configurations: {str(e)}")
         return []
 
-def handleSendEmail(logger:Logger, name: str, subject: str, body: str, to: str):
+def handleSendEmail(name: str, subject: str, body: str, to: str):
     config = MailConfig.load_entry(name)
     if not config:
         return f"Email configuration '{name}' not found."
@@ -55,11 +58,10 @@ def handleSendEmail(logger:Logger, name: str, subject: str, body: str, to: str):
         logger.error(f"Failed to send email: {str(e)}")
         return f"Failed to send email: {str(e)}"
 
-def handleLoadFiveLatestEmails(logger: Logger, name: str):
+def handleLoadFiveLatestEmails(name: str):
     config = MailConfig.load_entry(name)
     if not config:
         return f"Email configuration '{name}' not found."
-
     try:
         if config.inbound_ssl == "SSL/TLS":
             mail = imaplib.IMAP4_SSL(config.inbound_host)
