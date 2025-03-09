@@ -1,6 +1,7 @@
 from .config import MailConfig
-import smtplib, imaplib
+import smtplib, imaplib, email
 import logging
+from imapclient import IMAPClient
 
 logger = logging.getLogger(__name__)
 
@@ -64,19 +65,21 @@ def handleLoadFiveLatestEmails(name: str):
         return f"Email configuration '{name}' not found."
     try:
         logger.info(f"Loading emails from {config.inbound_host}")
-        if config.inbound_ssl == True:
-            mail = imaplib.IMAP4_SSL(config.inbound_host)
-        else:
-            mail = imaplib.IMAP4(config.inbound_host)
-        mail.login(config.inbound_user, config.inbound_password)
-        mail.select('inbox')
-        _, data = mail.search(None, 'ALL')
-        latest_ids = data[0].split()[-5:]
+        imap_client = IMAPClient(config.inbound_host, ssl=config.inbound_ssl)
+        imap_client.login(config.inbound_user, config.inbound_password)
+        imap_client.select_folder('INBOX')
+        latest_ids = imap_client.search('ALL')[-5:]
         emails = []
-        for email_id in latest_ids:
-            _, msg_data = mail.fetch(email_id, '(RFC822)')
-            emails.append(msg_data[0][1].decode('utf-8'))
-        mail.logout()
+        for uid, message_data in imap_client.fetch(latest_ids, "RFC822").items():
+            email_message = email.message_from_bytes(message_data[b"RFC822"])
+            logger.info(uid, email_message.get("From"), email_message.get("Subject"))
+            emails.append({
+                "uid": uid,
+                "from": email_message.get("From"),
+                "subject": email_message.get("Subject"),
+                "body": email_message.get_payload()
+                })
+        imap_client.logout()
         return emails
     except Exception as e:
         logger.error(f"Failed to load emails: {str(e)}")
