@@ -130,13 +130,13 @@ async def serve() -> Server:
             delete_config = handleDeleteConfig(arguments['name'])
             return [TextContent(type="text",text=f'Email config deleted:{delete_config}')]
         elif name == "send_email":
-            config_name = arguments['_name']
-            del arguments['_name']
+            config_name = arguments['name']
+            del arguments['name']
             send_email = handleSendEmail(config_name,**arguments)
             return [TextContent(type="text",text=f'Email sent:{send_email}')]
         elif name == "read_email":
-            config_name = arguments['_name']
-            del arguments['_name']
+            config_name = arguments['name']
+            del arguments['name']
             read_emails = handleLoadFiveLatestEmails(config_name)
             return [TextContent(type="text",text=f'Email received:{read_emails}')]
         else:

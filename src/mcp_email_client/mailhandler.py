@@ -63,7 +63,8 @@ def handleLoadFiveLatestEmails(name: str):
     if not config:
         return f"Email configuration '{name}' not found."
     try:
-        if config.inbound_ssl == "SSL/TLS":
+        logger.info(f"Loading emails from {config.inbound_host}")
+        if config.inbound_ssl == True:
             mail = imaplib.IMAP4_SSL(config.inbound_host)
         else:
             mail = imaplib.IMAP4(config.inbound_host)
