@@ -10,8 +10,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 # Import with mock to avoid loading the actual model during tests
 with patch('sentence_transformers.SentenceTransformer'):
-    import semantic
-    import db
+    import mcp_email_client.semantic as semantic
+    import mcp_email_client.db as db
 
 class TestSemanticOperations(unittest.TestCase):
     """Test semantic search operations."""

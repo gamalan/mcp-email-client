@@ -1,15 +1,12 @@
 import asyncio
 import logging
 from pathlib import Path
-from typing import Sequence
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import (
     TextContent,
     Tool,
 )
-<<<<<<< HEAD:mailclient.py
-from config import MailConfig
 from mail import (
     handleAddConfig, 
     handleUpdateConfig, 
@@ -24,12 +21,8 @@ from mail import (
     handleSemanticSearchEmails,
     handleGenerateEmbeddings
 )
-=======
-from .mailhandler import *
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
 
-
-async def serve() -> Server:
+async def serve(repository: Path | None) -> None:
     logger = logging.getLogger(__name__)
     server = Server("EmailClient")
 
@@ -49,28 +42,16 @@ async def serve() -> Server:
             ),
             Tool(
                 name="add_email_config",
-<<<<<<< HEAD:mailclient.py
                 description="Add a new email configuration",
                 inputSchema={
                     "type": "object",
                     "properties": {
                         "name": {"type": "string"},
-=======
-                description="Add email configuration",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "_name": {"type": "string"},
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
                         "inbound_user": {"type": "string"},
                         "inbound_password": {"type": "string"},
                         "inbound_host": {"type": "string"},
                         "inbound_port": {"type": "integer"},
-<<<<<<< HEAD:mailclient.py
                         "inbound_ssl": {"type": "string"},
-=======
-                        "inbound_ssl": {"type": "boolean"},
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
                         "is_outbound_equal": {"type": "boolean"},
                         "outbound_user": {"type": "string"},
                         "outbound_password": {"type": "string"},
@@ -78,11 +59,7 @@ async def serve() -> Server:
                         "outbound_port": {"type": "integer"},
                         "outbound_ssl": {"type": "string"},
                     },
-<<<<<<< HEAD:mailclient.py
                     "required": ["name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
-=======
-                    "required": ["_name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
                 }
             ),
             Tool(
@@ -91,20 +68,12 @@ async def serve() -> Server:
                 inputSchema={
                     "type": "object",
                     "properties": {
-<<<<<<< HEAD:mailclient.py
                         "name": {"type": "string"},
-=======
-                        "_name": {"type": "string"},
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
                         "inbound_user": {"type": "string"},
                         "inbound_password": {"type": "string"},
                         "inbound_host": {"type": "string"},
                         "inbound_port": {"type": "integer"},
-<<<<<<< HEAD:mailclient.py
                         "inbound_ssl": {"type": "string"},
-=======
-                        "inbound_ssl": {"type": "boolean"},
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
                         "is_outbound_equal": {"type": "boolean"},
                         "outbound_user": {"type": "string"},
                         "outbound_password": {"type": "string"},
@@ -112,11 +81,7 @@ async def serve() -> Server:
                         "outbound_port": {"type": "integer"},
                         "outbound_ssl": {"type": "string"},
                     },
-<<<<<<< HEAD:mailclient.py
                     "required": ["name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
-=======
-                    "required": ["_name", "inbound_user", "inbound_password", "inbound_host", "inbound_port", "inbound_ssl", "is_outbound_equal"],
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
                 }
             ),
             Tool(
@@ -240,7 +205,6 @@ async def serve() -> Server:
             list_config = handleListConfigs()
             return [TextContent(type="text",text=f'Email configs:{list_config}')]
         elif name == "add_email_config":
-<<<<<<< HEAD:mailclient.py
             config_name = arguments.get("name")
             del arguments["name"]
             add_config = handleAddConfig(config_name, **arguments)
@@ -268,27 +232,6 @@ async def serve() -> Server:
         elif name == "read_email":
             config_name = arguments.get("name")
             read_emails = handleLoadHundredLatestEmails(config_name)
-=======
-            add_config = handleAddConfig(**arguments)
-            return [TextContent(type="text",text=f'Email config added:{add_config}')]
-        elif name == "update_email_config":
-            config_name = arguments['_name']
-            del arguments['_name']
-            update_config = handleUpdateConfig(config_name,**arguments)
-            return [TextContent(type="text",text=f'Email config updated:{update_config}')]
-        elif name == "delete_email_config":
-            delete_config = handleDeleteConfig(arguments['name'])
-            return [TextContent(type="text",text=f'Email config deleted:{delete_config}')]
-        elif name == "send_email":
-            config_name = arguments['name']
-            del arguments['name']
-            send_email = handleSendEmail(config_name,**arguments)
-            return [TextContent(type="text",text=f'Email sent:{send_email}')]
-        elif name == "read_email":
-            config_name = arguments['name']
-            del arguments['name']
-            read_emails = handleLoadFiveLatestEmails(config_name)
->>>>>>> ae749589d08caf15ba5762550d410092f32dc974:src/mcp_email_client/server.py
             return [TextContent(type="text",text=f'Email received:{read_emails}')]
         elif name == "search_emails":
             config_name = arguments.get("name")  # Optional
@@ -331,7 +274,9 @@ async def serve() -> Server:
         else:
             raise ValueError(f"Unknown tool: {name}")
 
-    return server
+    options = server.create_initialization_options()
+    async with stdio_server() as (read_stream, write_stream):
+        await server.run(read_stream, write_stream, options, raise_exceptions=True)
 
 
 def main() -> None:

@@ -14,7 +14,7 @@ import os
 # Add the current directory to the path to ensure modules can be found
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from mailclient import serve
+from mcp_email_client.server import serve
 
 # Configure logging
 logging.basicConfig(
