@@ -12,3 +12,4 @@ wheels/
 .vscode
 config/*.json
 !config/new_name.json
+emails.duckdb

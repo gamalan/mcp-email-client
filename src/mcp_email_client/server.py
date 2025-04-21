@@ -7,7 +7,7 @@ from mcp.types import (
     TextContent,
     Tool,
 )
-from mail import (
+from mcp_email_client.mailhandler import (
     handleAddConfig, 
     handleUpdateConfig, 
     handleDeleteConfig, 

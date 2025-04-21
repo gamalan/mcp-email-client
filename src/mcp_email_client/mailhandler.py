@@ -1,4 +1,4 @@
-from config import MailConfig
+from mcp_email_client.config import MailConfig
 import smtplib, imaplib
 import datetime
 from email import message_from_bytes
