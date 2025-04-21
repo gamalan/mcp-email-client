@@ -9,3 +9,6 @@ wheels/
 
 # Virtual environments
 .venv
+.vscode
+config/*.json
+!config/new_name.json
