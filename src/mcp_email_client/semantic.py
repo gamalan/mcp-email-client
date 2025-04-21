@@ -48,7 +48,7 @@ def update_email_with_embedding(email_id: int, combined_text: str) -> None:
 def semantic_search(
     query: str, 
     config_name: Optional[str] = None, 
-    similarity_threshold: float = 0.6,
+    similarity_threshold: float = 0.3,
     limit: int = 10
 ) -> List[Dict[str, Any]]:
     """
@@ -89,9 +89,13 @@ def semantic_search(
         if email_embedding is not None:
             # Calculate similarity score
             similarity = cosine_similarity(query_embedding, email_embedding)
+            #if similarity >= similarity_threshold:
+            # Add similarity score to email dictionary
             if similarity >= similarity_threshold:
-                # Add similarity score to email dictionary
                 email_with_score = email.copy()
+                del email_with_score['body']
+                del email_with_score['embedding']
+                del email_with_score['raw_content']  # Remove embedding from output
                 email_with_score['similarity_score'] = float(similarity)
                 scored_emails.append(email_with_score)
     
