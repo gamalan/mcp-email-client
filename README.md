@@ -46,10 +46,29 @@ Configuration example using Claude Desktop
       "args": [
         "run",
         "--directory",
-        "D:\\Project\\replace-with-repo-folder-location", 
+        "D:\\Project\\RepoPath", 
         "mcp_email_client"
       ]
     }
   }
+}
+```
+
+or in VsCode
+
+```json
+{
+    "servers": {
+        "any-name": {
+            "type": "stdio",
+            "command": "/path/to/uv",
+            "args": [
+                "run",
+                "--directory",
+                "/path/to/repo",
+                "run_mcp_server.py",
+            ]
+        }
+    }
 }
 ```
