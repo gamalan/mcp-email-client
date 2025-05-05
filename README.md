@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/gamalan-mcp-email-client-badge.png)](https://mseep.ai/app/gamalan-mcp-email-client)
+
 # Mail Client MCP
 
 ## Overview
